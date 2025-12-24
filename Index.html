@@ -4,138 +4,209 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Criador de Anotações</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="Style.css" />
   <style>
-    /* Container principal das seções */
+    /* Sobrescrevendo e adicionando estilos específicos */
+    :root {
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
     .container {
       max-width: 700px;
       margin: 0 auto;
       padding: 20px;
     }
 
-    /* ======== Estilos para o formulário ======== */
     .section {
-      background-color: var(--background-section, #f9f9f9);
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 20px;
+      background-color: var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding: 25px;
       margin-bottom: 30px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 15px;
       width: 100%;
       box-sizing: border-box;
+      border: 2px solid transparent;
+      transition: transform 0.3s ease;
+    }
+
+    /* Animação RGB nas bordas arredondadas */
+    @keyframes rgb-border {
+      0% { border-color: #ff0000; }
+      20% { border-color: #ff8000; }
+      40% { border-color: #ffff00; }
+      60% { border-color: #00ff00; }
+      80% { border-color: #0000ff; }
+      100% { border-color: #ff0000; }
+    }
+
+    .section {
+      animation: rgb-border 5s linear infinite;
     }
 
     .section h2 {
       margin: 0 0 10px 0;
       font-size: 1.5rem;
-      color: #222;
+      color: var(--primary);
+      border-bottom: 2px solid var(--light-gray);
+      padding-bottom: 10px;
     }
 
-    /* Inputs e textarea */
     input[type="text"],
+    input[type="datetime-local"],
     textarea {
       width: 100%;
-      padding: 10px 12px;
-      border: 1.5px solid #ccc;
-      border-radius: 5px;
+      padding: 12px 15px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
       font-size: 1rem;
-      resize: vertical;
-      transition: border-color 0.3s ease;
+      background-color: var(--bg);
+      color: var(--text);
+      transition: all 0.3s ease;
       box-sizing: border-box;
-      color: #000;
-      background-color: #fff;
     }
 
-    input[type="text"]:focus,
-    textarea:focus {
-      border-color: #007BFF;
+    input:focus, textarea:focus {
+      border-color: var(--primary);
       outline: none;
-      background-color: #fff;
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
     }
 
-    /* Botão */
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     button {
-      width: fit-content;
       padding: 10px 20px;
-      background-color: #007BFF;
+      background-color: var(--primary);
       border: none;
-      border-radius: 5px;
+      border-radius: var(--radius-sm);
       color: white;
       font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.3s ease;
-      align-self: flex-start;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
 
     button:hover {
-      background-color: #0056b3;
+      background-color: var(--primary-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-delete { background-color: var(--danger); }
+    .btn-delete:hover { background-color: #dc2626; }
+    
+    .btn-edit { background-color: var(--accent); }
+    .btn-edit:hover { background-color: #d97706; }
+
+    .btn-move { 
+      background-color: var(--gray); 
+      padding: 5px 10px;
+      font-size: 0.8rem;
     }
 
     /* Cards de tarefas */
     .card {
-      background-color: #f0f0f0; /* cinza clarinho */
-      color: #000; /* texto preto */
-      border-radius: 6px;
-      padding: 15px 20px;
-      margin-bottom: 12px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-      box-sizing: border-box;
+      background-color: var(--card-bg);
+      color: var(--text);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: var(--shadow);
+      border-left: 5px solid var(--primary);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: scale(1.01);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
     }
 
     .card h3 {
-      margin: 0 0 8px 0;
-      font-weight: 700;
+      margin: 0;
       font-size: 1.2rem;
-      color: #222;
+      color: var(--primary);
+    }
+
+    .card-time {
+      font-size: 0.85rem;
+      color: var(--gray);
+      background: var(--light-gray);
+      padding: 2px 8px;
+      border-radius: 10px;
     }
 
     .card p {
-      margin: 0 0 10px 0;
-      color: #333;
-      font-size: 1rem;
+      margin: 10px 0;
+      line-height: 1.6;
     }
 
-    /* Botão de excluir dentro do card */
-    .delete-button {
-      background-color: #e74c3c;
-      color: white;
-      border: none;
-      padding: 7px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: background-color 0.3s ease;
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+      border-top: 1px solid var(--border);
+      padding-top: 15px;
     }
 
-    .delete-button:hover {
-      background-color: #c0392b;
+    .move-controls {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
     }
 
-@keyframes rgb-border {
-  0% {
-    border-image-source: linear-gradient(45deg, red, orange, yellow, green, cyan, blue, violet);
-  }
-  50% {
-    border-image-source: linear-gradient(45deg, violet, blue, cyan, green, yellow, orange, red);
-  }
-  100% {
-    border-image-source: linear-gradient(45deg, red, orange, yellow, green, cyan, blue, violet);
-  }
-}
+    /* Alarme Ativo */
+    .alarm-active {
+      border-left-color: var(--accent);
+      animation: pulse-alarm 2s infinite;
+    }
 
-.section {
-  border: 4px solid transparent;
-  border-image-slice: 1;
-  animation: rgb-border 10s linear infinite;
-}
-.card span {
-  font-size: 0.85rem;
-  color: #555;
-}
+    @keyframes pulse-alarm {
+      0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    }
 
+    /* Modal de Edição */
+    #editModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
   </style>
 </head>
 <body class="dark-mode">
@@ -173,108 +244,200 @@
     <section class="section">
       <h2>📝 Nova Tarefa</h2>
       <input type="text" id="titulo" placeholder="Título da Tarefa" />
-      <textarea id="descricao" rows="4" placeholder="Descrição da Tarefa"></textarea>
-      <button onclick="criarTarefa()">Adicionar Tarefa</button>
+      <textarea id="descricao" rows="3" placeholder="Descrição da Tarefa"></textarea>
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <label style="font-size: 0.9rem; font-weight: 600;">⏰ Programar Alarme (Opcional):</label>
+        <input type="datetime-local" id="alarme" />
+      </div>
+      <button onclick="criarTarefa()">🚀 Adicionar Tarefa</button>
     </section>
 
     <section class="section">
       <h2>📋 Minhas Tarefas</h2>
-      <div class="container-bottom" id="tarefas"></div>
+      <div id="tarefas"></div>
     </section>
   </div>
 
-  <script>
- // Carregar tarefas salvas com data
-window.onload = () => {
-  const tarefasSalvas = JSON.parse(localStorage.getItem("tarefas")) || [];
-  tarefasSalvas.forEach(({ titulo, descricao, dataHora }) => adicionarTarefa(titulo, descricao, dataHora));
-
-  const body = document.body;
-  const themeText = document.getElementById('themeText');
-  themeText.textContent = body.classList.contains('dark-mode') ? 'Modo Escuro' : 'Modo Claro';
-};
-
-function criarTarefa() {
-  const titulo = document.getElementById('titulo').value.trim();
-  const descricao = document.getElementById('descricao').value.trim();
-
-  if (!titulo || !descricao) {
-    alert("Preencha todos os campos!");
-    return;
-  }
-
-  const agora = new Date();
-  const dataHora = agora.toLocaleString();
-
-  adicionarTarefa(titulo, descricao, dataHora);
-  salvarTarefa(titulo, descricao, dataHora);
-
-  document.getElementById('titulo').value = '';
-  document.getElementById('descricao').value = '';
-}
-
-function adicionarTarefa(titulo, descricao, dataHora) {
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.innerHTML = `
-    <div style="display: flex; justify-content: space-between; align-items: start;">
-      <h3 style="margin: 0;">${titulo}</h3>
-      <span style="font-size: 0.85rem; color: #555;">${dataHora}</span>
+  <!-- MODAL DE EDIÇÃO -->
+  <div id="editModal">
+    <div class="modal-content">
+      <h3>Editar Tarefa</h3>
+      <input type="text" id="editTitulo" />
+      <textarea id="editDescricao" rows="4"></textarea>
+      <input type="datetime-local" id="editAlarme" />
+      <div class="btn-group">
+        <button onclick="salvarEdicao()">Salvar Alterações</button>
+        <button class="btn-delete" onclick="fecharModal()">Cancelar</button>
+      </div>
     </div>
-    <p>${descricao}</p>
-    <button class="delete-button">Excluir</button>
-  `;
+  </div>
 
-  card.querySelector(".delete-button").onclick = () => {
-    card.remove();
-    removerTarefa(titulo, descricao, dataHora);
-  };
+  <script>
+    let tarefasArray = [];
+    let editIndex = null;
 
-  document.getElementById('tarefas').appendChild(card);
-}
+    window.onload = () => {
+      tarefasArray = JSON.parse(localStorage.getItem("tarefas")) || [];
+      renderizarTarefas();
+      
+      // Solicitar permissão de notificação
+      if ("Notification" in window) {
+        Notification.requestPermission();
+      }
 
-function salvarTarefa(titulo, descricao, dataHora) {
-  const tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
-  tarefas.push({ titulo, descricao, dataHora });
-  localStorage.setItem("tarefas", JSON.stringify(tarefas));
-}
+      // Checar alarmes a cada minuto
+      setInterval(checarAlarmes, 60000);
+    };
 
-function removerTarefa(titulo, descricao, dataHora) {
-  let tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
-  tarefas = tarefas.filter(t => t.titulo !== titulo || t.descricao !== descricao || t.dataHora !== dataHora);
-  localStorage.setItem("tarefas", JSON.stringify(tarefas));
-}
+    function criarTarefa() {
+      const titulo = document.getElementById('titulo').value.trim();
+      const descricao = document.getElementById('descricao').value.trim();
+      const alarme = document.getElementById('alarme').value;
 
-   // Tema escuro/claro
-    const themeToggle = document.getElementById('themeToggle');
-    const themeText = document.getElementById('themeText');
-    const body = document.body;
+      if (!titulo) {
+        alert("O título é obrigatório!");
+        return;
+      }
 
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const savedTheme = localStorage.getItem('theme');
+      const novaTarefa = {
+        id: Date.now(),
+        titulo,
+        descricao,
+        alarme,
+        dataCriacao: new Date().toLocaleString(),
+        concluida: false
+      };
 
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      body.classList.add('dark-mode');
-      themeText.textContent = 'Modo Escuro';
-    } else {
-      themeText.textContent = 'Modo Claro';
+      tarefasArray.push(novaTarefa);
+      salvarEAtualizar();
+      
+      document.getElementById('titulo').value = '';
+      document.getElementById('descricao').value = '';
+      document.getElementById('alarme').value = '';
     }
+
+    function renderizarTarefas() {
+      const container = document.getElementById('tarefas');
+      container.innerHTML = '';
+
+      tarefasArray.forEach((tarefa, index) => {
+        const card = document.createElement('div');
+        card.className = `card ${tarefa.alarme ? 'alarm-active' : ''}`;
+        
+        card.innerHTML = `
+          <div class="card-header">
+            <h3>${tarefa.titulo}</h3>
+            <span class="card-time">${tarefa.dataCriacao}</span>
+          </div>
+          <p>${tarefa.descricao || 'Sem descrição'}</p>
+          ${tarefa.alarme ? `<div style="font-size: 0.8rem; color: var(--accent);">⏰ Alarme: ${new Date(tarefa.alarme).toLocaleString()}</div>` : ''}
+          
+          <div class="card-actions">
+            <button class="btn-edit" onclick="abrirModal(${index})">✏️ Editar</button>
+            <button class="btn-delete" onclick="removerTarefa(${index})">🗑️ Excluir</button>
+          </div>
+
+          <div class="move-controls">
+            <button class="btn-move" onclick="moverParaTopo(${index})" title="Mover para o topo">⬆️ Topo</button>
+            <button class="btn-move" onclick="moverParaBaixo(${index})" title="Mover para baixo">⬇️ Fundo</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function removerTarefa(index) {
+      if(confirm("Deseja excluir esta tarefa?")) {
+        tarefasArray.splice(index, 1);
+        salvarEAtualizar();
+      }
+    }
+
+    function abrirModal(index) {
+      editIndex = index;
+      const tarefa = tarefasArray[index];
+      document.getElementById('editTitulo').value = tarefa.titulo;
+      document.getElementById('editDescricao').value = tarefa.descricao;
+      document.getElementById('editAlarme').value = tarefa.alarme || '';
+      document.getElementById('editModal').style.display = 'flex';
+    }
+
+    function fecharModal() {
+      document.getElementById('editModal').style.display = 'none';
+      editIndex = null;
+    }
+
+    function salvarEdicao() {
+      if (editIndex !== null) {
+        tarefasArray[editIndex].titulo = document.getElementById('editTitulo').value;
+        tarefasArray[editIndex].descricao = document.getElementById('editDescricao').value;
+        tarefasArray[editIndex].alarme = document.getElementById('editAlarme').value;
+        salvarEAtualizar();
+        fecharModal();
+      }
+    }
+
+    function moverParaTopo(index) {
+      if (index > 0) {
+        const item = tarefasArray.splice(index, 1)[0];
+        tarefasArray.unshift(item);
+        salvarEAtualizar();
+      }
+    }
+
+    function moverParaBaixo(index) {
+      if (index < tarefasArray.length - 1) {
+        const item = tarefasArray.splice(index, 1)[0];
+        tarefasArray.push(item);
+        salvarEAtualizar();
+      }
+    }
+
+    function salvarEAtualizar() {
+      localStorage.setItem("tarefas", JSON.stringify(tarefasArray));
+      renderizarTarefas();
+    }
+
+    function checarAlarmes() {
+      const agora = new Date();
+      tarefasArray.forEach(tarefa => {
+        if (tarefa.alarme) {
+          const dataAlarme = new Date(tarefa.alarme);
+          // Se o alarme for agora (mesmo minuto)
+          if (agora.getHours() === dataAlarme.getHours() && agora.getMinutes() === dataAlarme.getMinutes()) {
+            dispararNotificacao(tarefa);
+          }
+        }
+      });
+    }
+
+    function dispararNotificacao(tarefa) {
+      if (Notification.permission === "granted") {
+        new Notification("Lembrete de Tarefa!", {
+          body: tarefa.titulo,
+          icon: "Logo2.png"
+        });
+      } else {
+        alert("⏰ ALARME: " + tarefa.titulo);
+      }
+    }
+
+    // Tema escuro/claro (mantendo lógica original melhorada)
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
 
     themeToggle.addEventListener('click', () => {
       body.classList.toggle('dark-mode');
       const isDark = body.classList.contains('dark-mode');
-      themeText.textContent = isDark ? 'Modo Escuro' : 'Modo Claro';
+      document.getElementById('themeText').textContent = isDark ? 'Modo Escuro' : 'Modo Claro';
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 
-    function updateLogoFilter() {
-      const isDark = body.classList.contains('dark-mode');
-      document.documentElement.style.setProperty('--icon-filter', isDark ? '1' : '0');
+    // Inicializar tema
+    if (localStorage.getItem('theme') === 'light') {
+      body.classList.remove('dark-mode');
+      document.getElementById('themeText').textContent = 'Modo Claro';
     }
-
-    const observer = new MutationObserver(updateLogoFilter);
-    observer.observe(body, { attributes: true, attributeFilter: ['class'] });
-    updateLogoFilter();
   </script>
 </body>
 </html>
